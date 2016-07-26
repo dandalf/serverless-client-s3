@@ -30,6 +30,10 @@ npm install --save serverless-client-s3
 
 * **Warning:** The plugin will overwrite any data you have in the bucket name you set above if it already exists.
 * **Pro Tip:** To add staging and region functionality to your client, use Serverless Variables in the bucket name: `"bucket.name.for.the.client.${stage}.${region}"`
+* **Other custom/client options:**
+  * **cacheExpiresInSeconds** sets a cache expires time for files, defaults to `3600` seconds
+  * **indexDocument** allows setting the filename suffix for the index document, defaults to `index.html`
+  * **errorDocument** allows setting the error document value, defaults to `error.html`
 
 
 **Third**, Create a `client/dist` folder in the root directory of your Serverless project. This is where your distribution-ready website should live. It is recommended to have a `client/src` where you'll be developing your website, and a build script that outputs to `client/dist`. The plugin simply expects and uploads the entire `client/dist` folder to S3, configure the bucket to host the website, and make it publicly available.
