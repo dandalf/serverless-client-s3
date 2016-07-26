@@ -256,7 +256,7 @@ module.exports = function(S) {
           Key: fileKey,
           Body: fileBuffer,
           ContentType: mime.lookup(filePath),
-          Expires: _this.expires
+          Cache-Control: `max-age = ${_this.expires}`
         };
 
         // TODO: remove browser caching
