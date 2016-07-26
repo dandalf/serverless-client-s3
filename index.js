@@ -111,6 +111,10 @@ module.exports = function(S) {
       if (!populatedProject.custom.client || !populatedProject.custom.client.bucketName) {
         return BbPromise.reject(new SError('Please specify a bucket name for the client in s-project.json'));
       }
+      
+      _this.expires = _.get(populatedProject.custom, 'client.cacheExpireSeconds', 3600);
+      _this.errorDocument = _.get(populatedProject.custom, 'client.errorDocument', 'error.html');
+      _this.indexDocument = _.get(populatedProject.custom, 'client.indexDocument', 'index.html');
 
       _this.bucketName = populatedProject.custom.client.bucketName;
       _this.clientPath = path.join(_this.project.getRootPath(), 'client', 'dist');
@@ -181,8 +185,8 @@ module.exports = function(S) {
           let params = {
             Bucket: _this.bucketName,
             WebsiteConfiguration: {
-              IndexDocument: { Suffix: 'index.html' },
-              ErrorDocument: { Key: 'error.html' }
+              IndexDocument: { Suffix: _this.indexDocument },
+              ErrorDocument: { Key: _this.errorDocument }
             }
           };
           return _this.aws.request('S3', 'putBucketWebsite', params, _this.evt.options.stage, _this.evt.options.region)
@@ -251,7 +255,8 @@ module.exports = function(S) {
           Bucket: _this.bucketName,
           Key: fileKey,
           Body: fileBuffer,
-          ContentType: mime.lookup(filePath)
+          ContentType: mime.lookup(filePath),
+          Expires: _this.expires
         };
 
         // TODO: remove browser caching
